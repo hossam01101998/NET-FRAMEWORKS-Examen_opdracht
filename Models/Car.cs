@@ -16,7 +16,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models
 
         public List<Order>? Orders { get; set; }
 
-        public Customer Customer { get; set; }
+        public Customer? Customer { get; set; }
 
         public Car () {
            

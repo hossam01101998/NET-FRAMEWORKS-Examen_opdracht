@@ -2,10 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Garage2.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Data;
+using Microsoft.AspNetCore.Identity;
+using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Garage2Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Garage2Context") ?? throw new InvalidOperationException("Connection string 'Garage2Context' not found.")));
+
+builder.Services.AddDefaultIdentity<Garage2User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<Garage2Context>();
 
 
 
@@ -43,6 +47,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",

@@ -48,7 +48,8 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         // GET: Cars/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "CustomerId");
+            //ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "CustomerId");
+            ViewBag.CustomerList = new SelectList(_context.Customer, "CustomerId", "Name");
             return View();
         }
 
@@ -61,6 +62,9 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         {
             if (ModelState.IsValid)
             {
+                car.Customer = _context.Customer.FirstOrDefault(c => c.CustomerId == car.CustomerId);
+
+
                 _context.Add(car);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -73,7 +77,8 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
                     Console.WriteLine($"Error: {error.ErrorMessage}");
                 }
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "CustomerId", car.CustomerId);
+            //ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "CustomerId", car.CustomerId);
+            ViewBag.CustomerList = new SelectList(_context.Customer, "CustomerId", "Name", car.CustomerId);
             return View(car);
         }
 

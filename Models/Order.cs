@@ -14,7 +14,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models
         public int CarID { get; set; }
 
 
-        public Car Car { get; set; }
+        public Car? Car { get; set; }
        
         public Order()
         {

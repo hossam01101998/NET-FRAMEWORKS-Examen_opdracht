@@ -18,7 +18,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models
         public string RequiredService { get; set; }
         public string Status { get; set; }
 
-        public Car Car { get; set; }
+        public Car? Car { get; set; }
 
         public Appointment()
         {

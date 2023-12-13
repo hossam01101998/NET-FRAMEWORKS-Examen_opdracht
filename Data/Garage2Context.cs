@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Areas.Identity.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models;
 
 namespace Garage2.Data
 {
-    public class Garage2Context : DbContext
+    public class Garage2Context : IdentityDbContext<Garage2User>
     {
 
         public Garage2Context (DbContextOptions<Garage2Context> options)

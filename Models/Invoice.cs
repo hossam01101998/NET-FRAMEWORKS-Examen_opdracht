@@ -18,8 +18,8 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models
         public decimal TotalAmount { get; set; }
         public string Details { get; set; }
 
-        public Customer Customer { get; set; }
-        public Car Car { get; set; }
+        public Customer? Customer { get; set; }
+        public Car? Car { get; set; }
 
         public Invoice()
         {
