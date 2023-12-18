@@ -22,6 +22,7 @@
                 <select asp-for="CarID" class ="form-control" asp-items="ViewBag.CarID"></select>
             </div>
             <div class="form-group">
+                <br/>
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -29,8 +30,22 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <br />
+    <a asp-action="Index" class="btn btn-custom">Back to List</a>
 </div>
+
+<style>
+    .btn-custom {
+        background-color: green;
+        color: #fff;
+        border-color: darkgreen;
+    }
+
+        .btn-custom:hover {
+            background-color: darkgreen;
+            color: #fff;
+        }
+</style>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

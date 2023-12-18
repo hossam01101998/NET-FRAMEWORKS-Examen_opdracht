@@ -31,6 +31,23 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ExpenseId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <br/>
+    <a asp-action="Edit" asp-route-id="@Model?.ExpenseId" class="btn btn-warning">Edit</a> 
+    <div>
+        <br />
+        <a asp-action="Index" class="btn btn-custom">Back to List</a>
+    </div>
+
+    <style>
+        .btn-custom {
+            background-color: green;
+            color: #fff;
+            border-color: darkgreen;
+        }
+
+            .btn-custom:hover {
+                background-color: darkgreen;
+                color: #fff;
+            }
+    </style>
 </div>

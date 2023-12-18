@@ -8,6 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="wwwroot\Images\Car.jpg" />
+    <None Remove="wwwroot\Images\Mainwindow.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Images\Appointment.jpg" />
+    <None Include="wwwroot\Images\Capital.jpg" />
+    <None Include="wwwroot\Images\Customer.jpg" />
+    <None Include="wwwroot\Images\Invoice.jpg" />
+    <None Include="wwwroot\Images\Order.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.14">
@@ -20,6 +33,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\Images\Car.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\Mainwindow.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

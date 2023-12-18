@@ -30,10 +30,29 @@
             @Html.DisplayFor(model => model.Adress)
         </dd>
     </dl>
+    <br /> 
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="CustomerId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Delete" class="btn btn-danger" /> 
+        
+        
+        <div>
+            <br />
+            <a asp-action="Index" class="btn btn-custom">Back to List</a>
+        </div>
+
+        <style>
+            .btn-custom {
+                background-color: green;
+                color: #fff;
+                border-color: darkgreen;
+            }
+
+                .btn-custom:hover {
+                    background-color: darkgreen;
+                    color: #fff;
+                }
+        </style>
     </form>
 </div>

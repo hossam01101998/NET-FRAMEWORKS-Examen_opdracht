@@ -4,11 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>CARS</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-info">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -27,33 +28,73 @@
             <th>
                 @Html.DisplayNameFor(model => model.Customer)
             </th>
-            <th></th>
+            <th>Edit</th>
+            <th>Details</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Make)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LicensePlate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ChassisNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.CustomerId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CarID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CarID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CarID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr class="hover-row" onclick="location.href='@Url.Action("Details", new { id = item.CarID })';">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Make)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LicensePlate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ChassisNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.Name)
+                </td>
+
+                <td class="action-icons" >
+                    <a asp-action="Edit" asp-route-id="@item.CarID">
+                        <img src="~/Images/Edit.png" alt="Edit" width="30" />
+                    </a>
+                </td>
+                <td class="action-icons">
+                    <a asp-action="Details" asp-route-id="@item.CarID">
+                        <img src="~/Images/Details.png" alt="Details" width="30" />
+                    </a>
+                </td>
+                <td class="action-icons">
+                    <a asp-action="Delete" asp-route-id="@item.CarID">
+                        <img src="~/Images/Delete.png" alt="Delete" width="30" />
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .table, th, td {
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .hover-row:hover {
+        background-color: #f5f5f5;
+        cursor: pointer;
+    }
+</style>

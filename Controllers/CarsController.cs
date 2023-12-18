@@ -95,7 +95,10 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "CustomerId", car.CustomerId);
+
+            //ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "CustomerId", car.CustomerId);
+            ViewBag.CustomerList = new SelectList(_context.Customer, "CustomerId", "Name", car.CustomerId);
+
             return View(car);
         }
 
@@ -113,6 +116,8 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 
             if (ModelState.IsValid)
             {
+                car.Customer = _context.Customer.FirstOrDefault(c => c.CustomerId == car.CustomerId);
+
                 try
                 {
                     _context.Update(car);
@@ -131,7 +136,9 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "CustomerId", "CustomerId", car.CustomerId);
+
+            ViewBag.CustomerList = new SelectList(_context.Customer, "CustomerId", "Name", car.CustomerId);
+
             return View(car);
         }
 

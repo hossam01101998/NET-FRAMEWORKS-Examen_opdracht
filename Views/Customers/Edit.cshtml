@@ -28,16 +28,30 @@
                 <input asp-for="Adress" class="form-control" />
                 <span asp-validation-for="Adress" class="text-danger"></span>
             </div>
+            <br/>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
+<br/>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-custom">Back to List</a>
 </div>
+
+<style>
+    .btn-custom {
+        background-color: green;
+        color: #fff;
+        border-color: darkgreen;
+    }
+
+        .btn-custom:hover {
+            background-color: darkgreen;
+            color: #fff;
+        }
+</style>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
