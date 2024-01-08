@@ -167,9 +167,25 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Admincode")
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Adress")
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConfirmEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -178,11 +194,18 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -201,8 +224,15 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Postcode")
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -307,6 +337,10 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("CustomerId");
 
                     b.ToTable("Customer");
@@ -346,9 +380,6 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Migrations
                     b.Property<int>("CarID")
                         .HasColumnType("int");
 
-                    b.Property<int>("CustomerID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Details")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -362,8 +393,6 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Migrations
                     b.HasKey("InvoiceId");
 
                     b.HasIndex("CarID");
-
-                    b.HasIndex("CustomerID");
 
                     b.ToTable("Invoice");
                 });
@@ -476,15 +505,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Car");
-
-                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models.Order", b =>

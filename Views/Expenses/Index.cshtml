@@ -15,14 +15,20 @@
     <thead>
         <tr>
             <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" style="color:black">
+                    Date
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AmountSortParm"]" style="color:black">
+                    Amount
+                </a>
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
+            
+            
             <th>Edit</th>
             <th>Details</th>
             <th>Delete</th>
@@ -33,14 +39,16 @@
         {
             <tr class="hover-row" onclick="location.href='@Url.Action("Details", new { id = item.ExpenseId })';">
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Date)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount) €
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                
+                
                 <td class="action-icons">
                     <a asp-action="Edit" asp-route-id="@item.ExpenseId">
                         <img src="~/Images/Edit.png" alt="Edit" width="30" />

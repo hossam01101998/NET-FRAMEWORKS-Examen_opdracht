@@ -7,9 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models;
+using System.Globalization;
+using System.Net.NetworkInformation;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class ExpensesController : Controller
     {
         private readonly Garage2Context _context;
@@ -20,12 +25,32 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         }
 
         // GET: Expenses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-              return _context.Expense != null ? 
-                          View(await _context.Expense.ToListAsync()) :
-                          Problem("Entity set 'Garage2Context.Expense'  is null.");
+            ViewData["DateSortParm"] = string.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
+            ViewData["AmountSortParm"] = sortOrder == "amount" ? "amount_desc" : "amount";
+
+            var expenses = _context.Expense.AsQueryable();
+
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    expenses = expenses.OrderByDescending(e => e.Date);
+                    break;
+                case "amount":
+                    expenses = expenses.OrderBy(e => e.Amount);
+                    break;
+                case "amount_desc":
+                    expenses = expenses.OrderByDescending(e => e.Amount);
+                    break;
+                default:
+                    expenses = expenses.OrderBy(e => e.Date);
+                    break;
+            }
+
+            return View(await expenses.ToListAsync());
         }
+
 
         // GET: Expenses/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -80,8 +105,18 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
             {
                 return NotFound();
             }
+
+            // convierte la cantidad a un formato de cadena y remueve caracteres no deseados
+
+            string amountString = new string(expense.Amount.ToString().Where(c => char.IsDigit(c) || c == '.').ToArray());
+
+            // reemplaza la coma por un punto en el Amount
+            expense.Amount = decimal.Parse(amountString, CultureInfo.InvariantCulture) / 100;
+
+
             return View(expense);
         }
+
 
         // POST: Expenses/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

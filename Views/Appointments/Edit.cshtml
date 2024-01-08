@@ -13,26 +13,35 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="AppointmentId" />
+            
+            
             <div class="form-group">
-                <label asp-for="CarID" class="control-label"></label>
-                <select asp-for="CarID" class="form-control" asp-items="ViewBag.CarID"></select>
+                <label asp-for="CarID" class="control-label">Car</label>
+                <select asp-for="CarID" class="form-control" asp-items="ViewBag.Cars"></select>
                 <span asp-validation-for="CarID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AppointmentDate" class="control-label"></label>
-                <input asp-for="AppointmentDate" class="form-control" />
+                <label asp-for="AppointmentDate" class="control-label">Appointment Date</label>
+                <input asp-for="AppointmentDate" class="form-control" type="datetime-local" value="@ViewData["FormattedAppointmentDate"]" />
                 <span asp-validation-for="AppointmentDate" class="text-danger"></span>
             </div>
+
+           
             <div class="form-group">
-                <label asp-for="RequiredService" class="control-label"></label>
+                <label asp-for="RequiredService" class="control-label">Required Service</label>
                 <input asp-for="RequiredService" class="form-control" />
                 <span asp-validation-for="RequiredService" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
+                <label asp-for="Status" class="control-label">Status</label>
+                <select asp-for="Status" class="form-control">
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <br/>
                 <input type="submit" value="Save" class="btn btn-primary" />

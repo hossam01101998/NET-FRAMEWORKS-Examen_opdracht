@@ -2,11 +2,20 @@
 @{
     ViewData["Title"] = "Error";
 }
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
 
 <h1 class="text-danger">Error.</h1>
+
+
 <h2 class="text-danger">An error occurred while processing your request.</h2>
 
-@if (Model.ShowRequestId)
+@if (Model != null && Model.ShowRequestId != null)
 {
     <p>
         <strong>Request ID:</strong> <code>@Model.RequestId</code>

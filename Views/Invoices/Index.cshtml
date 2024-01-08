@@ -15,16 +15,20 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.IssueDate)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["IssueDateSortParm"]" style="color:black">
+                    Issue Date
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TotalAmount)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TotalAmountSortParm"]" style="color:black">
+                    Amount
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Details)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Customer)
+                @Html.DisplayNameFor(model => model.Car.Customer)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Car)
@@ -42,16 +46,16 @@
                     @Html.DisplayFor(modelItem => item.IssueDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TotalAmount)
+                    @Html.DisplayFor(modelItem => item.TotalAmount) €
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Details)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Customer.CustomerId)
+                    @Html.DisplayFor(modelItem => item.Car.Customer.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Car.CarID)
+                    @Html.DisplayFor(modelItem => item.Car.LicensePlate)
                 </td>
                 <td class="action-icons">
                     <a asp-action="Edit" asp-route-id="@item.InvoiceId">

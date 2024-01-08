@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 {
+    [Authorize]
     public class CarsController : Controller
     {
         private readonly Garage2Context _context;
@@ -20,11 +23,54 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         }
 
         // GET: Cars
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string sortOrder)
         {
-            var garage2Context = _context.Car.Include(c => c.Customer);
-            return View(await garage2Context.ToListAsync());
+            var cars = _context.Car.Include(c => c.Customer).AsQueryable();
+
+            ViewData["MakeSortParm"] = String.IsNullOrEmpty(sortOrder) ? "make_desc" : "";
+            ViewData["ModelSortParm"] = sortOrder == "model" ? "model_desc" : "model";
+            ViewData["LicensePlateSortParm"] = sortOrder == "licenseplate" ? "licenseplate_desc" : "licenseplate";
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.ToLower();
+                cars = cars
+                    .Where(c =>
+                        c.LicensePlate.ToLower().Contains(search) ||
+                        c.ChassisNumber.ToLower().Contains(search) ||
+                        c.Make.ToLower().Contains(search) ||
+                        c.Model.ToLower().Contains(search) ||
+                        c.Customer.Name.ToLower().Contains(search));
+            }
+
+            cars = cars.OrderBy(c => c.Make).ThenBy(c => c.Model).ThenBy(c => c.LicensePlate);
+
+            if (sortOrder == "make_desc")
+            {
+                cars = cars.OrderByDescending(c => c.Make);
+            }
+            else if (sortOrder == "model")
+            {
+                cars = cars.OrderBy(c => c.Model);
+            }
+            else if (sortOrder == "model_desc")
+            {
+                cars = cars.OrderByDescending(c => c.Model);
+            }
+            else if (sortOrder == "licenseplate")
+            {
+                cars = cars.OrderBy(c => c.LicensePlate);
+            }
+            else if (sortOrder == "licenseplate_desc")
+            {
+                cars = cars.OrderByDescending(c => c.LicensePlate);
+            }
+
+            return View(await cars.ToListAsync());
         }
+
+
+
 
         // GET: Cars/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -166,19 +212,43 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Car == null)
+            try
             {
-                return Problem("Entity set 'Garage2Context.Car'  is null.");
-            }
-            var car = await _context.Car.FindAsync(id);
-            if (car != null)
-            {
+                var car = await _context.Car
+                    .Include(c => c.Orders)
+                    .FirstOrDefaultAsync(c => c.CarID == id);
+
+                if (car == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Order.RemoveRange(car.Orders);
+
                 _context.Car.Remove(car);
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException is SqlException sqlException && sqlException.Number == 547)
+                {
+                    ViewData["ErrorMessage"] = "You cannot delete this car because there are orders or invoices for this car.";
+                    return View("Error");
+                }
+
+                Console.WriteLine(ex);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
+
 
         private bool CarExists(int id)
         {

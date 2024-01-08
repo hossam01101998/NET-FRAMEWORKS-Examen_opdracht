@@ -58,13 +58,7 @@ namespace Garage2.Data
                 .HasForeignKey(order => order.CarID)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Invoice>()
-                .HasOne(invoice => invoice.Customer)
-                .WithMany()
-                .HasForeignKey(invoice => invoice.CustomerID)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Invoice>()
+           modelBuilder.Entity<Invoice>()
                 .HasOne(invoice => invoice.Car)
                 .WithMany()
                 .HasForeignKey(invoice => invoice.CarID)

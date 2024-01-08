@@ -19,8 +19,8 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TotalAmount)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalAmount)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalAmount) €
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Details)
@@ -28,17 +28,70 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Details)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.CustomerId)
+        
+        <dd class="col-sm-10">
+            <div class="custom-bg-blue p-3 rounded">
+                <h4>Customer</h4>
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        Customer Name
+                    </dt>
+                    <dd class="col-sm-10 text-dark">
+                        @Html.DisplayFor(model => model.Car.Customer.Name)
+                    </dd>
+                    <dt class="col-sm-2">
+                        Address
+                    </dt>
+                    <dd class="col-sm-10 text-dark">
+                        @Html.DisplayFor(model => model.Car.Customer.Adress)
+                    </dd>
+                    <dt class="col-sm-2">
+                        Email
+                    </dt>
+                    <dd class="col-sm-10 text-dark">
+                        @Html.DisplayFor(model => model.Car.Customer.Email)
+                    </dd>
+                    <dt class="col-sm-2">
+                        Phone Number
+                    </dt>
+                    <dd class="col-sm-10 text-dark">
+                        @Html.DisplayFor(model => model.Car.Customer.PhoneNumber)
+                    </dd>
+                </dl>
+            </div>
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Car)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Car.CarID)
+        <dd class="col-sm-10">
+            <div class="custom-bg-green p-3 rounded">
+                <h4>Car Details</h4>
+
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Car.Make)
+                    </dt>
+                    <dd class="col-sm-10 text-dark">
+                        @Html.DisplayFor(model => model.Car.Make)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Car.Model)
+                    </dt>
+                    <dd class="col-sm-10 text-dark">
+                        @Html.DisplayFor(model => model.Car.Model)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Car.LicensePlate)
+                    </dt>
+                    <dd class="col-sm-10 text-dark">
+                        @Html.DisplayFor(model => model.Car.LicensePlate)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Car.ChassisNumber)
+                    </dt>
+                    <dd class="col-sm-10 text-dark">
+                        @Html.DisplayFor(model => model.Car.ChassisNumber)
+                    </dd>
+                    
+                </dl>
+            </div>
         </dd>
     </dl>
 </div>
@@ -61,5 +114,13 @@
                 background-color: darkgreen;
                 color: #fff;
             }
+
+        .custom-bg-green {
+            background-color: lightgreen;
+        }
+
+        .custom-bg-blue {
+            background-color: lightblue;
+        }
     </style>
 </div>

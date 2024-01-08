@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Edit";
 }
+@using System.Globalization
+
 
 <h1>Edit</h1>
 
@@ -20,9 +22,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
+                <input asp-for="Amount" class="form-control" value="@Model.Amount.ToString("F2",CultureInfo.InvariantCulture)" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
                 <input asp-for="Date" class="form-control" />

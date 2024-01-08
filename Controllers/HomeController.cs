@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models;
 
 namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

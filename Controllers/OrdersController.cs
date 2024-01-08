@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 {
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly Garage2Context _context;
@@ -20,15 +22,35 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var garage2Context = _context.Order.Include(o => o.Car);
-            return View(await garage2Context.ToListAsync());
+
+            IQueryable<Order> orders = _context.Order.Include(o => o.Car).ThenInclude(c => c.Customer);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.ToLower(); 
+                orders = orders.Where(o =>
+                    o.Car.Customer.Name.ToLower().Contains(search) ||
+                    o.Car.LicensePlate.ToLower().Contains(search) ||
+                    o.Car.ChassisNumber.ToLower().Contains(search)
+                );
+            }
+
+            return View(await orders.ToListAsync());
+
+            //    var orders = _context.Order.Include(o => o.Car).ThenInclude(c => c.Customer).ToList();
+
+            //    var garage2Context = _context.Order.Include(o => o.Car);
+            //    return View(await garage2Context.ToListAsync());
+
         }
 
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var orders = _context.Order.Include(o => o.Car).ThenInclude(c => c.Customer).ToList();
+
             if (id == null || _context.Order == null)
             {
                 return NotFound();
@@ -48,9 +70,11 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID");
+            ViewBag.CarID = new SelectList(_context.Car, "CarID", "LicensePlate");
             return View();
         }
+
+       
 
         // POST: Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -82,7 +106,8 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
             {
                 return NotFound();
             }
-            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID", order.CarID);
+            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "LicensePlate", order.CarID);
+
             return View(order);
         }
 
@@ -118,7 +143,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID", order.CarID);
+
             return View(order);
         }
 

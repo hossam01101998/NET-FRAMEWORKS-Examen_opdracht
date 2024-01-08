@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models;
+using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 {
+    [Authorize (Roles = "Admin")]
     public class InvoicesController : Controller
     {
         private readonly Garage2Context _context;
@@ -20,11 +23,33 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         }
 
         // GET: Invoices
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var garage2Context = _context.Invoice.Include(i => i.Car).Include(i => i.Customer);
-            return View(await garage2Context.ToListAsync());
+            ViewData["IssueDateSortParm"] = string.IsNullOrEmpty(sortOrder) ? "issuedate_desc" : "";
+            ViewData["TotalAmountSortParm"] = sortOrder == "totalamount" ? "totalamount_desc" : "totalamount";
+
+            var invoices = _context.Invoice.AsQueryable();
+
+            switch (sortOrder)
+            {
+                case "issuedate_desc":
+                    invoices = invoices.OrderByDescending(i => i.IssueDate);
+                    break;
+                case "totalamount":
+                    invoices = invoices.OrderBy(i => i.TotalAmount);
+                    break;
+                case "totalamount_desc":
+                    invoices = invoices.OrderByDescending(i => i.TotalAmount);
+                    break;
+                default:
+                    invoices = invoices.OrderBy(i => i.IssueDate);
+                    break;
+            }
+
+            invoices = invoices.Include(i => i.Car).Include(c => c.Car.Customer);
+            return View(await invoices.ToListAsync());
         }
+
 
         // GET: Invoices/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -36,7 +61,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 
             var invoice = await _context.Invoice
                 .Include(i => i.Car)
-                .Include(i => i.Customer)
+                .Include(i => i.Car.Customer)
                 .FirstOrDefaultAsync(m => m.InvoiceId == id);
             if (invoice == null)
             {
@@ -45,21 +70,26 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 
             return View(invoice);
         }
-
         // GET: Invoices/Create
         public IActionResult Create()
         {
-            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID");
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerId", "CustomerId");
+
+            ViewData["Cars"] = new SelectList(_context.Car, "CarID", "LicensePlate");
+            //ViewData["Customers"] = new SelectList(_context.Customer, "CustomerId", "Name");
             return View();
         }
+
+
+
+
+
 
         // POST: Invoices/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("InvoiceId,CarID,CustomerID,IssueDate,TotalAmount,Details")] Invoice invoice)
+        public async Task<IActionResult> Create([Bind("InvoiceId,CarID,IssueDate,TotalAmount,Details")] Invoice invoice)
         {
             if (ModelState.IsValid)
             {
@@ -67,10 +97,18 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID", invoice.CarID);
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerId", "CustomerId", invoice.CustomerID);
+
+            var cars = _context.Car.Select(c => new SelectListItem
+            {
+                Value = c.CarID.ToString(),
+                Text = c.LicensePlate
+            }).ToList();
+
+            ViewData["Cars"] = new SelectList(cars, "Value", "Text");
+
             return View(invoice);
         }
+
 
         // GET: Invoices/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -85,17 +123,29 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
             {
                 return NotFound();
             }
-            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID", invoice.CarID);
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerId", "CustomerId", invoice.CustomerID);
+
+            //para eliminar los puntos cada 3 digitos
+
+            string totalAmountString = new string(invoice.TotalAmount.ToString().Where(c => char.IsDigit(c) || c == '.').ToArray());
+
+            // reemplaza la coma por un punto en el TotalAmount
+            invoice.TotalAmount = (decimal.Parse(invoice.TotalAmount.ToString("F2"), CultureInfo.InvariantCulture))/100;
+
+            ViewData["FormattedInvoiceDate"] = invoice.IssueDate.ToString("yyyy-MM-ddTHH:mm");
+
+            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "LicensePlate", invoice.CarID);
+            //ViewData["CarDetails"] = _context.Car.FirstOrDefault(c => c.CarID == invoice.CarID)?.SomeProperty;
+
             return View(invoice);
         }
+
 
         // POST: Invoices/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("InvoiceId,CarID,CustomerID,IssueDate,TotalAmount,Details")] Invoice invoice)
+        public async Task<IActionResult> Edit(int id, [Bind("InvoiceId,CarID,IssueDate,TotalAmount,Details")] Invoice invoice)
         {
             if (id != invoice.InvoiceId)
             {
@@ -123,7 +173,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID", invoice.CarID);
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerId", "CustomerId", invoice.CustomerID);
+            //ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerId", "CustomerId", invoice.Car.CustomerId);
             return View(invoice);
         }
 
@@ -137,7 +187,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 
             var invoice = await _context.Invoice
                 .Include(i => i.Car)
-                .Include(i => i.Customer)
+                //.Include(i => i.Car.Customer)
                 .FirstOrDefaultAsync(m => m.InvoiceId == id);
             if (invoice == null)
             {

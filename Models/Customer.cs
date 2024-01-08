@@ -10,6 +10,9 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string Adress { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        public string PhoneNumber { get; set; }
         public List<Car>? Cars { get; set; }
 
        

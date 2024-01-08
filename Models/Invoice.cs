@@ -10,15 +10,13 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models
         [ForeignKey("Car")]
         public int CarID { get; set; }
 
-        [ForeignKey("Customer")]
-        public int CustomerID { get; set; }
-
+        
         [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime IssueDate { get; set; }
         public decimal TotalAmount { get; set; }
         public string Details { get; set; }
 
-        public Customer? Customer { get; set; }
         public Car? Car { get; set; }
 
         public Invoice()
@@ -33,7 +31,6 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models
             TotalAmount = totalAmount;
             Details = details;
             Car = car;
-            Customer = customer;
             InvoiceId = GenerateUniqueId();
         }
 

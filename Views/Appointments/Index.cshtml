@@ -5,26 +5,53 @@
     Layout = "_Layout";
 }
 
+
 <h1>APPOINTMENTS</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-info">Create New</a>
 </p>
 
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <label for="statusFilter">Status:</label>
+        <select class="form-control" id="statusFilter" name="statusFilter">
+            <option value="">All</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Pending">Pending</option>
+            <option value="Cancelled">Cancelled</option>
+
+        </select>
+    </div>
+
+    <div class="form-group col-md-4">
+        <label for="dateFilter">Date:</label>
+        <input type="date" class="form-control" id="dateFilter" name="dateFilter">
+    </div>
+
+    <div class="form-group">
+        <label for="search">Search:</label>
+        <input type="text" class="form-control" id="search" name="search" placeholder="Search by License Plate or Required Service.">
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Search</button>
+
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.AppointmentDate)
+                Appointment Date
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RequiredService)
+                Required Service
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Car)
+                License Plate
             </th>
             <th>Edit</th>
             <th>Details</th>
@@ -45,7 +72,7 @@
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Car.CarID)
+                    @Html.DisplayFor(modelItem => item.Car.LicensePlate)
                 </td>
                 <td class="action-icons">
                     <a asp-action="Edit" asp-route-id="@item.AppointmentId">
@@ -92,3 +119,5 @@
         cursor: pointer;
     }
 </style>
+
+

@@ -7,9 +7,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models;
+using Microsoft.Data.SqlClient;
+using static NuGet.Packaging.PackagingConstants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 {
+    [Authorize]
     public class CustomersController : Controller
     {
         private readonly Garage2Context _context;
@@ -20,22 +24,49 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string sortOrder)
         {
-              return _context.Customer != null ? 
-                          View(await _context.Customer.ToListAsync()) :
-                          Problem("Entity set 'Garage2Context.Customer'  is null.");
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            var customers = await _context.Customer.ToListAsync();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.ToLower();
+                customers = customers.Where(c =>
+                    c.Name.ToLower().Contains(search) ||
+                    c.Email.ToLower().Contains(search) ||
+                    c.Adress.ToLower().Contains(search) ||
+                    c.PhoneNumber.ToLower().Contains(search)
+                ).ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    customers = customers.OrderByDescending(c => c.Name).ToList();
+                    break;
+                default:
+                    customers = customers.OrderBy(c => c.Name).ToList();
+                    break;
+            }
+
+            return View(customers);
         }
+
+
 
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
             if (id == null || _context.Customer == null)
             {
                 return NotFound();
             }
 
             var customer = await _context.Customer
+                .Include(c => c.Cars)
                 .FirstOrDefaultAsync(m => m.CustomerId == id);
             if (customer == null)
             {
@@ -56,7 +87,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,Name,Email,Adress")] Customer customer)
+        public async Task<IActionResult> Create([Bind("CustomerId,Name,Email,Adress,PhoneNumber")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -98,7 +129,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,Name,Email,Adress")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,Name,Email,Adress,PhoneNumber")] Customer customer)
         {
             if (id != customer.CustomerId)
             {
@@ -151,19 +182,35 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Customer == null)
+            try
             {
-                return Problem("Entity set 'Garage2Context.Customer'  is null.");
-            }
-            var customer = await _context.Customer.FindAsync(id);
-            if (customer != null)
-            {
+                var customer = await _context.Customer.FindAsync(id);
+
+                if (customer == null)
+                {
+                    return Problem("El cliente no se encontró.");
+                }
+
                 _context.Customer.Remove(customer);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException is SqlException sqlException && sqlException.Number == 547)
+                {
+                    ViewData["ErrorMessage"] = "You cannot delete this customer because there are cars on his/her name.";
+                    return View("Error");
+                }
+
+                Console.WriteLine(ex);
+                throw;
+            }
         }
+
+
+
 
         private bool CustomerExists(int id)
         {

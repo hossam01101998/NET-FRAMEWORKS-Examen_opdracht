@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models;
+using static NuGet.Packaging.PackagingConstants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
 {
+    [Authorize]
     public class AppointmentsController : Controller
     {
         private readonly Garage2Context _context;
@@ -20,35 +23,67 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         }
 
         // GET: Appointments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string statusFilter, string search, DateTime? dateFilter)
         {
-            var garage2Context = _context.Appointment.Include(a => a.Car);
-            return View(await garage2Context.ToListAsync());
+            var appointments = _context.Appointment.Include(a => a.Car).AsQueryable();
+
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                appointments = appointments.Where(a => a.Status == statusFilter);
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                search = search.ToLower();
+
+                appointments = appointments.Where(a =>
+                    a.RequiredService.ToLower().Contains(search) ||
+                    a.Car.LicensePlate.ToLower().Contains(search)
+                );
+            }
+
+            if (dateFilter.HasValue)
+            {
+                appointments = appointments.Where(a => a.AppointmentDate.Date == dateFilter.Value.Date);
+            }
+
+            // ordenar por fecha
+            appointments = appointments.OrderBy(a => a.AppointmentDate);
+
+            var appointmentList = await appointments.ToListAsync();
+
+            return View(appointmentList);
         }
+
+
 
         // GET: Appointments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Appointment == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var appointment = await _context.Appointment
                 .Include(a => a.Car)
+                    .ThenInclude(c => c.Customer)
                 .FirstOrDefaultAsync(m => m.AppointmentId == id);
+
             if (appointment == null)
             {
                 return NotFound();
             }
-
+                        
             return View(appointment);
         }
+
 
         // GET: Appointments/Create
         public IActionResult Create()
         {
-            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID");
+            ViewBag.Cars = new SelectList(_context.Car, "CarID", "LicensePlate");
+
             return View();
         }
 
@@ -65,24 +100,30 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID", appointment.CarID);
+            //ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID", appointment.CarID);
+            ViewBag.Cars = new SelectList(_context.Car, "CarID", "LicensePlate");
+
             return View(appointment);
+
         }
 
         // GET: Appointments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var appointment = await _context.Appointment.FindAsync(id);
+
             if (id == null || _context.Appointment == null)
             {
                 return NotFound();
             }
 
-            var appointment = await _context.Appointment.FindAsync(id);
             if (appointment == null)
             {
                 return NotFound();
             }
-            ViewData["CarID"] = new SelectList(_context.Car, "CarID", "CarID", appointment.CarID);
+            ViewBag.Cars = new SelectList(_context.Car.ToList(), "CarID", "LicensePlate");
+            ViewData["FormattedAppointmentDate"] = appointment.AppointmentDate.ToString("yyyy-MM-ddTHH:mm");
+
             return View(appointment);
         }
 

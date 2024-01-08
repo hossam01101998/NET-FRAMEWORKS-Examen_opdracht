@@ -10,23 +10,35 @@
     <a asp-action="Create" class="btn btn-info">Create New</a>
 </p>
 
+
+
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <label for="search">Search:</label>
+        <input type="text" class="form-control" id="search" name="search" placeholder="Search by Make, Model, Licenseplate, Chasisnumber or Customer Name.">
+    </div>
+    <br/>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Make)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MakeSortParm"]" style="color:black">Make</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Model)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ModelSortParm"]" style="color:black">Model</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LicensePlate)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LicensePlateSortParm"]" style="color:black">License Plate</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ChassisNumber)
+                Chassis Number
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Customer)
+                Customer
             </th>
             <th>Edit</th>
             <th>Details</th>
