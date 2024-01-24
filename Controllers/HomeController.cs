@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Areas.Identity.Data;
 
 namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers

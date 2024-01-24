@@ -77,6 +77,12 @@
     </tbody>
 </table>
 
+<div class="total-sum-container">
+    <strong class="total-sum-text">Total amount of all the invoices:</strong>
+    <br />
+    <strong style="font-size:xx-large">@ViewBag.TotalInvoicesSum.ToString("C")</strong>
+</div>
+
 <style>
     .table {
         width: 100%;
@@ -101,4 +107,20 @@
         background-color: #f5f5f5;
         cursor: pointer;
     }
+
+    .total-sum-container {
+        background-color: lightgreen;
+        border: 1px solid #ccc;
+        padding: 20px;
+        text-align: center;
+        margin: 50px auto; 
+        max-width: 400px;
+        border-radius: 10px; 
+    }
+
+    .total-sum-text {
+        color: #333;
+        font-size: 18px;
+    }
+
 </style>

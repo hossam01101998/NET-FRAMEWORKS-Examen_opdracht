@@ -48,6 +48,10 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
                     break;
             }
 
+            decimal totalExpensesSum = expenses.Sum(i => i.Amount);
+            ViewBag.TotalExpensesSum = totalExpensesSum;
+
+
             return View(await expenses.ToListAsync());
         }
 

@@ -25,6 +25,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
         // GET: Invoices
         public async Task<IActionResult> Index(string sortOrder)
         {
+
             ViewData["IssueDateSortParm"] = string.IsNullOrEmpty(sortOrder) ? "issuedate_desc" : "";
             ViewData["TotalAmountSortParm"] = sortOrder == "totalamount" ? "totalamount_desc" : "totalamount";
 
@@ -47,6 +48,10 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Controllers
             }
 
             invoices = invoices.Include(i => i.Car).Include(c => c.Car.Customer);
+            
+            decimal totalInvoicesSum = invoices.Sum(i => i.TotalAmount);
+            ViewBag.TotalInvoicesSum = totalInvoicesSum;
+
             return View(await invoices.ToListAsync());
         }
 
