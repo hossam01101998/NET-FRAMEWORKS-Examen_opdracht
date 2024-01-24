@@ -4,6 +4,7 @@ using Garage2.Data;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Data;
 using Microsoft.AspNetCore.Identity;
 using NET_FRAMEWORKS_EXAMEN_OPDRACHT.Areas.Identity.Data;
+using FluentAssertions.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Garage2Context>(options =>
@@ -13,7 +14,8 @@ builder.Services.AddDefaultIdentity<Garage2User>(options => options.SignIn.Requi
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<Garage2Context>();
 
-
+// registro del servicio CookieMiddleware
+builder.Services.AddTransient<CookieMiddleware>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -51,6 +53,10 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+//para las cookies
+app.UseMiddleware<CookieMiddleware>();
+
 
 app.MapControllerRoute(
     name: "default",
@@ -124,6 +130,6 @@ using (var scope = app.Services.CreateScope())
         }
 
     }
-}
+}     
 
 app.Run();
