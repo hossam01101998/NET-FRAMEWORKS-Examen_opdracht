@@ -12,9 +12,25 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Data
             Console.WriteLine("iniciando");
 
             context.Database.EnsureCreated();
-            // Seeders
 
-            if (!context.Customer.Any())
+			if (!context.Languages.Any())
+			{
+				context.AddRange(
+					new Language { Id = "- ", Name = "-", IsSystemLanguage = false, IsAvailable = DateTime.MaxValue },
+					new Language { Id = "en", Name = "English", IsSystemLanguage = true },
+					new Language { Id = "nl", Name = "Nederlands", IsSystemLanguage = true },
+					new Language { Id = "fr", Name = "français", IsSystemLanguage = true },
+					new Language { Id = "de", Name = "Deutsch", IsSystemLanguage = true }
+					);
+				context.SaveChanges();
+			}
+
+			Language.GetLanguages(context);
+
+
+			// Seeders
+
+			if (!context.Customer.Any())
             {
                 context.Add(new Customer { Name = "John", Email = "john@gmail.com", Adress = "Ijsstraat 23 A", PhoneNumber = "04254154554" });
                 context.Add(new Customer { Name = "Richy", Email = "richy@gmail.com", Adress = "Palmstraat 3", PhoneNumber = "04254154554" });
@@ -132,6 +148,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Data
                 context.SaveChanges();
             }
 
+            
 
         }
     }

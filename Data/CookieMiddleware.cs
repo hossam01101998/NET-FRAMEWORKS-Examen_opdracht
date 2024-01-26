@@ -9,7 +9,7 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Data
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             // verificar si la cookie específica está presente
-            var cookieValue = context.Request.Cookies["NombreDeLaCookie"];
+            var cookieValue = context.Request.Cookies["UserCookie"];
 
             if (!string.IsNullOrEmpty(cookieValue))
             {

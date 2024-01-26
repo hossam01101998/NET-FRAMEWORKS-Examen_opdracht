@@ -32,7 +32,8 @@ namespace Garage2.Data
 
         public DbSet<NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models.Order> Order { get; set; } = default!;
 
-        public void InitiateDatabase()
+		public DbSet<NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models.Language> Languages { get; set; } = default!;
+		public void InitiateDatabase()
         {
             Database.Migrate();  // Esto asegura que la base de datos esté creada y actualizada.
 

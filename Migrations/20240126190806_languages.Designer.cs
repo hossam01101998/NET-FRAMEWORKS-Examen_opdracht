@@ -4,6 +4,7 @@ using Garage2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Migrations
 {
     [DbContext(typeof(Garage2Context))]
-    partial class Garage2ContextModelSnapshot : ModelSnapshot
+    [Migration("20240126190806_languages")]
+    partial class languages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -395,27 +398,6 @@ namespace NET_FRAMEWORKS_EXAMEN_OPDRACHT.Migrations
                     b.HasIndex("CarID");
 
                     b.ToTable("Invoice");
-                });
-
-            modelBuilder.Entity("NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models.Language", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(2)
-                        .HasColumnType("nvarchar(2)");
-
-                    b.Property<DateTime>("IsAvailable")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsSystemLanguage")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Languages");
                 });
 
             modelBuilder.Entity("NET_FRAMEWORKS_EXAMEN_OPDRACHT.Models.Order", b =>
